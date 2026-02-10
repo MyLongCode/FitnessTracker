@@ -2,13 +2,11 @@ using AdminPanel.Data;
 using AdminPanel.Models;
 using AdminPanel.Services;
 using AdminPanel.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Controllers;
 
-[Authorize]
 public class ReccomendationsController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Index(string? search, string sort = "id", int page = 1, int pageSize = 10)
