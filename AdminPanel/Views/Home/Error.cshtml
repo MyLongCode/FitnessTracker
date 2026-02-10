@@ -1,1 +1,6 @@
 <h2>Произошла ошибка</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-warning">@ViewBag.ErrorMessage</div>
+}

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using AdminPanel.Data;
 
@@ -8,30 +7,33 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login";
-        options.AccessDeniedPath = "/Account/Login";
-    });
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>()?.Error;
+        var message = exception is System.Net.Sockets.SocketException or Npgsql.NpgsqlException
+            ? "Не удалось подключиться к базе данных. Проверьте Host/Port в строке подключения и доступность БД."
+            : "Произошла непредвиденная ошибка.";
+
+        context.Response.Redirect($"/Home/Error?message={Uri.EscapeDataString(message)}");
+        await Task.CompletedTask;
+    });
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -2,14 +2,12 @@ using AdminPanel.Data;
 using AdminPanel.Models;
 using AdminPanel.Services;
 using AdminPanel.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdminPanel.Controllers;
 
-[Authorize]
 public class UsersTrainController(AppDbContext context) : Controller
 {
     public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
