@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-md-2 bg-light min-vh-100 p-3">
+            <h4>Admin Panel</h4>
+            <div class="list-group">
+                <a class="list-group-item" asp-controller="Exercises" asp-action="Index">Exercises</a>
+                <a class="list-group-item" asp-controller="Products" asp-action="Index">Products</a>
+                <a class="list-group-item" asp-controller="Reccomendations" asp-action="Index">Reccomendations</a>
+                <a class="list-group-item" asp-controller="Trainings" asp-action="Index">Trainings</a>
+                <a class="list-group-item" asp-controller="TrainsExercises" asp-action="Index">TrainsExercises</a>
+                <a class="list-group-item" asp-controller="Users" asp-action="Index">Users</a>
+                <a class="list-group-item" asp-controller="UserFood" asp-action="Index">UserFood</a>
+                <a class="list-group-item" asp-controller="UsersTrain" asp-action="Index">UsersTrain</a>
+            </div>
+            @if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <form asp-controller="Account" asp-action="Logout" method="post" class="mt-3">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Logout (@User.Identity?.Name)</button>
+                </form>
+            }
+        </aside>
+        <main class="col-md-10 p-4">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+</div>
+</body>
+</html>

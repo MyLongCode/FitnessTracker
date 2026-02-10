@@ -1,0 +1,10 @@
+@model PagedResult<Exercise>
+<h2>Exercises</h2>
+<a asp-action="Create" class="btn btn-primary mb-2">Create</a>
+<form class="row g-2 mb-2" method="get">
+<input name="search" value="@ViewBag.Search" class="form-control col" placeholder="Search name" />
+<select name="pageSize" class="form-select col-auto"><option>10</option><option>25</option><option>50</option></select>
+<button class="btn btn-secondary col-auto">Apply</button></form>
+<table class="table"><tr><th><a asp-route-sort="@(ViewBag.Sort=="id"?"id_desc":"id")">Id</a></th><th><a asp-route-sort="@(ViewBag.Sort=="name"?"name_desc":"name")">Name</a></th><th>MuscleGroup</th><th></th></tr>
+@foreach(var x in Model.Items){<tr><td>@x.Id</td><td>@x.Name</td><td>@x.MuscleGroup</td><td><a asp-action="Details" asp-route-id="@x.Id">Details</a> | <a asp-action="Edit" asp-route-id="@x.Id">Edit</a> | <a asp-action="Delete" asp-route-id="@x.Id">Delete</a></td></tr>}
+</table>

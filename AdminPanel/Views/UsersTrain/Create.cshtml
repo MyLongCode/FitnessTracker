@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.UsersTrainFormViewModel
+<h2>Create UsersTrain</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><select asp-for="UserId" asp-items="Model.Users" class="form-select mb-2"></select><select asp-for="TrainId" asp-items="Model.Trainings" class="form-select mb-2"></select><input asp-for="DateCreated" type="date" class="form-control mb-2"/><button class="btn btn-primary">Save</button></form>

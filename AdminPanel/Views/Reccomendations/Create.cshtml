@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.ReccomendationFormViewModel
+<h2>Create Reccomendation</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><input asp-for="Id" class="form-control mb-2"/><input asp-for="Name" class="form-control mb-2"/><textarea asp-for="Description" class="form-control mb-2"></textarea><input asp-for="Image" class="form-control mb-2"/><button class="btn btn-primary">Save</button></form>

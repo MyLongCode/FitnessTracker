@@ -1,0 +1,4 @@
+@model PagedResult<TrainsExercise>
+<h2>TrainsExercises</h2><a asp-action="Create" class="btn btn-primary mb-2">Create</a>
+<form method="get" class="mb-2"><select name="trainId" asp-items="ViewBag.TrainId"><option value="">All trainings</option></select><button>Filter</button></form>
+<table class="table"><tr><th>Training</th><th>Exercise</th><th>Ammount</th><th></th></tr>@foreach(var x in Model.Items){<tr><td>@x.TrainId - @x.Train?.Name</td><td>@x.ExerciseId - @x.Exercise?.Name</td><td>@x.Ammount</td><td><a asp-action="Details" asp-route-trainId="@x.TrainId" asp-route-exerciseId="@x.ExerciseId">Details</a> | <a asp-action="Edit" asp-route-trainId="@x.TrainId" asp-route-exerciseId="@x.ExerciseId">Edit</a> | <a asp-action="Delete" asp-route-trainId="@x.TrainId" asp-route-exerciseId="@x.ExerciseId">Delete</a></td></tr>}</table>

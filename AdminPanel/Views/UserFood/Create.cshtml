@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.UserFoodFormViewModel
+<h2>Create UserFood</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><select asp-for="UserId" asp-items="Model.Users" class="form-select mb-2"></select><select asp-for="FoodId" asp-items="Model.Products" class="form-select mb-2"></select><input asp-for="Weight" class="form-control mb-2"/><input asp-for="Date" class="form-control mb-2" type="date"/><button class="btn btn-primary">Save</button></form>
