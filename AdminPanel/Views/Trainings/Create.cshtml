@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.TrainingFormViewModel
+<h2>Create Training</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><input asp-for="Id" class="form-control mb-2"/><input asp-for="Name" class="form-control mb-2"/><input asp-for="Duration" class="form-control mb-2"/><input asp-for="Difficulty" class="form-control mb-2"/><input asp-for="Inventory" class="form-control mb-2"/><input asp-for="MuscleGroup" class="form-control mb-2"/><button class="btn btn-primary">Save</button></form>

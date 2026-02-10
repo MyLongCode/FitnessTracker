@@ -1,0 +1,3 @@
+@model PagedResult<UsersTrain>
+<h2>UsersTrain</h2><a asp-action="Create" class="btn btn-primary mb-2">Create</a>
+<table class="table"><tr><th>User</th><th>Training</th><th>DateCreated</th><th></th></tr>@foreach(var x in Model.Items){<tr><td>@x.UserId - @x.User?.Name</td><td>@x.TrainId - @x.Train?.Name</td><td>@x.DateCreated</td><td><a asp-action="Details" asp-route-userId="@x.UserId" asp-route-trainId="@x.TrainId" asp-route-dateCreated="@x.DateCreated">Details</a> | <a asp-action="Edit" asp-route-userId="@x.UserId" asp-route-trainId="@x.TrainId" asp-route-dateCreated="@x.DateCreated">Edit</a> | <a asp-action="Delete" asp-route-userId="@x.UserId" asp-route-trainId="@x.TrainId" asp-route-dateCreated="@x.DateCreated">Delete</a></td></tr>}</table>

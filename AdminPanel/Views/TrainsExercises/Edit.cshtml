@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.TrainsExerciseFormViewModel
+<h2>Edit TrainsExercise</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><select asp-for="TrainId" asp-items="Model.Trainings" class="form-select mb-2"></select><select asp-for="ExerciseId" asp-items="Model.Exercises" class="form-select mb-2"></select><input asp-for="Ammount" class="form-control mb-2"/><button class="btn btn-primary">Save</button></form>

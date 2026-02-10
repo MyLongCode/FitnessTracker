@@ -1,0 +1,3 @@
+@model AdminPanel.ViewModels.ProductFormViewModel
+<h2>Create Product</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<input asp-for="Id" class="form-control mb-2" placeholder="Id"/><input asp-for="Name" class="form-control mb-2" placeholder="Name"/><input asp-for="Image" class="form-control mb-2" placeholder="Image"/><input asp-for="Kcal" class="form-control mb-2" placeholder="Kcal"/><input asp-for="Protein" class="form-control mb-2" placeholder="Protein"/><input asp-for="Carbohyd" class="form-control mb-2" placeholder="Carbohyd"/><input asp-for="Fat" class="form-control mb-2" placeholder="Fat"/><button class="btn btn-primary">Save</button></form>

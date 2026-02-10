@@ -1,0 +1,2 @@
+@model AdminPanel.ViewModels.UserFormViewModel
+<h2>Create User</h2><form method="post">@Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div><input asp-for="UserId" class="form-control mb-2"/><input asp-for="Name" class="form-control mb-2"/><input asp-for="Weight" class="form-control mb-2"/><input asp-for="Height" class="form-control mb-2"/><input asp-for="FoodLike" class="form-control mb-2"/><button class="btn btn-primary">Save</button></form>

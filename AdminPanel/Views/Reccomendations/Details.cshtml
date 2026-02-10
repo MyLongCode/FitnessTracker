@@ -1,0 +1,2 @@
+@model Reccomendation
+<h2>Reccomendation Details</h2><p>@Model.Name</p><p>@Model.Description</p>@if(!string.IsNullOrWhiteSpace(Model.Image)){<img src="@Model.Image" style="max-height:120px"/>}
