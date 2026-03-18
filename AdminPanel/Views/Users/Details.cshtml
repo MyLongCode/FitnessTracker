@@ -1,2 +1,156 @@
-@model User
-<h2>User Details</h2><p>@Model.UserId - @Model.Name</p>
+@model AdminPanel.ViewModels.UserDetailsViewModel
+@{
+    ViewData["Title"] = $"Пользователь #{Model.User.UserId}";
+    var maxMealsCount = Math.Max(Model.MealsLast7Days.DefaultIfEmpty().Max(x => x?.MealsCount ?? 0), 1);
+}
+
+<style>
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        height: 100%;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1;
+    }
+
+    .stat-caption {
+        color: #475569;
+        margin-top: 0.5rem;
+    }
+
+    .chart-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        background-color: #fff;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        align-items: end;
+        gap: 0.75rem;
+        min-height: 260px;
+    }
+
+    .chart-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: end;
+        gap: 0.5rem;
+        height: 100%;
+    }
+
+    .chart-value {
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .chart-bar-wrap {
+        width: 100%;
+        max-width: 56px;
+        height: 180px;
+        border-radius: 999px;
+        background-color: #e2e8f0;
+        display: flex;
+        align-items: end;
+        overflow: hidden;
+    }
+
+    .chart-bar {
+        width: 100%;
+        background: linear-gradient(180deg, #38bdf8 0%, #2563eb 100%);
+        border-radius: 999px;
+        min-height: 8px;
+    }
+
+    .chart-label {
+        color: #475569;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-start mb-4 gap-3 flex-wrap">
+    <div>
+        <h2 class="mb-1">@(string.IsNullOrWhiteSpace(Model.User.Name) ? "Пользователь без имени" : Model.User.Name)</h2>
+        <p class="text-secondary mb-0">ID: @Model.User.UserId</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Назад к списку</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Общее количество тренировок</div>
+            <div class="stat-value">@Model.TotalWorkouts</div>
+            <div class="stat-caption">Все записи из журнала тренировок пользователя.</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Дней в системе</div>
+            <div class="stat-value">@Model.DaysRegistered</div>
+            <div class="stat-caption">
+                @if (Model.FirstActivityDate.HasValue)
+                {
+                    <span>Рассчитано от первой активности: @Model.FirstActivityDate.Value.ToString("dd.MM.yyyy").</span>
+                }
+                else
+                {
+                    <span>Пока нет данных о тренировках или приёмах пищи.</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-label">Параметры пользователя</div>
+            <div class="stat-value fs-3">@Model.User.Weight кг / @Model.User.Height см</div>
+            <div class="stat-caption">Предпочтения в еде: @(string.IsNullOrWhiteSpace(Model.User.FoodLike) ? "не указаны" : Model.User.FoodLike)</div>
+        </div>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="d-flex justify-content-between align-items-start mb-4 gap-3 flex-wrap">
+        <div>
+            <h3 class="h4 mb-1">Приёмы пищи за последние 7 дней</h3>
+            <p class="text-secondary mb-0">Столбчатая диаграмма показывает количество записей в журнале питания по дням.</p>
+        </div>
+        <span class="badge text-bg-primary">7 дней</span>
+    </div>
+
+    <div class="chart-grid" role="img" aria-label="Статистика приёмов пищи за 7 дней">
+        @foreach (var item in Model.MealsLast7Days)
+        {
+            var heightPercent = item.MealsCount == 0 ? 4 : Math.Max(item.MealsCount * 100 / maxMealsCount, 10);
+            var titleText = $"{item.Date:dd.MM.yyyy}: {item.MealsCount}";
+            <div class="chart-column">
+                <div class="chart-value">@item.MealsCount</div>
+                <div class="chart-bar-wrap" title="@titleText">
+                    <div class="chart-bar" style="height: @(heightPercent)%;"></div>
+                </div>
+                <div class="chart-label">@item.Label</div>
+            </div>
+        }
+    </div>
+</div>

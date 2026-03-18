@@ -24,7 +24,70 @@ public class UsersController(AppDbContext context) : Controller
         return View(await query.ToPagedResultAsync(page, pageSize));
     }
 
-    public async Task<IActionResult> Details(long id) => (await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id)) is { } x ? View(x) : NotFound();
+    public async Task<IActionResult> Details(long id)
+    {
+        var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == id);
+        if (user == null) return NotFound();
+
+        var totalWorkoutsTask = context.UsersTrain
+            .AsNoTracking()
+            .Where(x => x.UserId == id)
+            .CountAsync();
+
+        var earliestWorkoutTask = context.UsersTrain
+            .AsNoTracking()
+            .Where(x => x.UserId == id)
+            .Select(x => (DateOnly?)x.DateCreated)
+            .MinAsync();
+
+        var earliestMealTask = context.UserFood
+            .AsNoTracking()
+            .Where(x => x.UserId == id)
+            .Select(x => (DateOnly?)x.Date)
+            .MinAsync();
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var periodStart = today.AddDays(-6);
+
+        var mealStatsTask = context.UserFood
+            .AsNoTracking()
+            .Where(x => x.UserId == id && x.Date >= periodStart && x.Date <= today)
+            .GroupBy(x => x.Date)
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToListAsync();
+
+        await Task.WhenAll(totalWorkoutsTask, earliestWorkoutTask, earliestMealTask, mealStatsTask);
+
+        var firstActivityDate = new[] { earliestWorkoutTask.Result, earliestMealTask.Result }
+            .Where(x => x.HasValue)
+            .Select(x => x!.Value)
+            .DefaultIfEmpty()
+            .Min();
+
+        var hasActivity = earliestWorkoutTask.Result.HasValue || earliestMealTask.Result.HasValue;
+        var mealsByDate = mealStatsTask.Result.ToDictionary(x => x.Date, x => x.Count);
+        var mealsLast7Days = Enumerable.Range(0, 7)
+            .Select(offset => periodStart.AddDays(offset))
+            .Select(date => new DailyMealStatViewModel
+            {
+                Date = date,
+                Label = date.ToString("dd.MM"),
+                MealsCount = mealsByDate.GetValueOrDefault(date)
+            })
+            .ToList();
+
+        var model = new UserDetailsViewModel
+        {
+            User = user,
+            TotalWorkouts = totalWorkoutsTask.Result,
+            DaysRegistered = hasActivity ? today.DayNumber - firstActivityDate.DayNumber + 1 : 0,
+            FirstActivityDate = hasActivity ? firstActivityDate : null,
+            MealsLast7Days = mealsLast7Days
+        };
+
+        return View(model);
+    }
+
     public IActionResult Create() => View(new UserFormViewModel());
 
     [HttpPost, ValidateAntiForgeryToken]
